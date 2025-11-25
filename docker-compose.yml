@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: spapperi-db
+    environment:
+      POSTGRES_USER: spapperi
+      POSTGRES_PASSWORD: spapperi_password
+      POSTGRES_DB: spapperi_rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spapperi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: spapperi-backend
+    environment:
+      - DATABASE_URL=postgresql://spapperi:spapperi_password@postgres:5432/spapperi_rag
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./Piantatalee-TP.pdf:/data/Piantatalee-TP.pdf
+      - ./Rincalzatore-SM.pdf:/data/Rincalzatore-SM.pdf
+      - ./Seminatrice-pneumatica-SMP.pdf:/data/Seminatrice-pneumatica-SMP.pdf
+      - ./Stendi-film-SF.pdf:/data/Stendi-film-SF.pdf
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: spapperi-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+
+
