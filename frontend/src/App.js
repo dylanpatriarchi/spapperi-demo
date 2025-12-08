@@ -8,16 +8,15 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 // Styled Components
 const AppContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 `;
 
 const Header = styled.header`
   text-align: center;
-  color: white;
-  margin-bottom: 30px;
+  color: #333;
+  margin-bottom: 40px;
 `;
 
 const Title = styled.h1`
@@ -36,8 +35,9 @@ const ChatContainer = styled.div`
   max-width: 900px;
   margin: 0 auto;
   background: white;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -145,13 +145,13 @@ const Input = styled.input`
   transition: border-color 0.3s;
   
   &:focus {
-    border-color: #667eea;
+    border-color: #333;
   }
 `;
 
 const Button = styled.button`
   padding: 12px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #333;
   color: white;
   border: none;
   border-radius: 25px;
@@ -162,7 +162,7 @@ const Button = styled.button`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
   &:disabled {
@@ -202,28 +202,7 @@ const LoadingDots = styled.div`
   }
 `;
 
-const SampleQuestions = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
-`;
 
-const SampleQuestion = styled.button`
-  padding: 8px 15px;
-  background: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 15px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    background: #667eea;
-    color: white;
-    border-color: #667eea;
-  }
-`;
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -233,13 +212,7 @@ function App() {
   const [health, setHealth] = useState(null);
   const messagesEndRef = useRef(null);
 
-  const sampleQuestions = [
-    "What products does Spapperi offer?",
-    "Tell me about the TN 100 transplanter",
-    "Quali sono le specifiche della seminatrice pneumatica?",
-    "How can I contact Spapperi?",
-    "Quelles sont les machines pour le tabac?"
-  ];
+
 
   useEffect(() => {
     fetchHealth();
@@ -275,7 +248,7 @@ function App() {
   const handleSubmit = async (e, question = null) => {
     e?.preventDefault();
     const questionText = question || input;
-    
+
     if (!questionText.trim()) return;
 
     const userMessage = {
@@ -314,9 +287,7 @@ function App() {
     }
   };
 
-  const handleSampleQuestion = (question) => {
-    setInput(question);
-  };
+
 
   return (
     <AppContainer>
@@ -344,14 +315,9 @@ function App() {
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#999' }}>
               <h2>👋 Welcome!</h2>
               <p>Ask me anything about Spapperi's agricultural machinery and products.</p>
-              <p style={{ fontSize: '0.9rem', marginTop: '20px' }}>Try these sample questions:</p>
-              <SampleQuestions>
-                {sampleQuestions.map((q, i) => (
-                  <SampleQuestion key={i} onClick={() => handleSampleQuestion(q)}>
-                    {q}
-                  </SampleQuestion>
-                ))}
-              </SampleQuestions>
+              <p style={{ fontSize: '0.9rem', marginTop: '20px', color: '#666' }}>
+                Ask me anything about Spapperi's agricultural machinery and products.
+              </p>
             </div>
           )}
 
